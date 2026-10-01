@@ -4,6 +4,9 @@ def plusplus(a, b):
 def minusminus(a, b):
     return a - b
 
+def multiply(a, b):
+    return a * b
+
 a = float(input())
 b = float(input())
 c = input("выберите из ( * - + )")
@@ -14,3 +17,8 @@ if c == "+":
 
 if c == "-":
     d = minusminus(a, b)
+
+if c == "*":
+    d = minusminus(a, b)
+
+print(d)
