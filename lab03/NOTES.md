@@ -1,0 +1,32 @@
+git diff - сравнивает рабочую директорию с индексом
+git show - показывает содержимое конкретного коммита (по умолчанию последнего)
+git log - показывает историю коммитов
+
+ЧТО НАШЛИ КОМАНДЫ:
+
+8c60280 (HEAD -> main) num multiply added
+acdcaa6 num difference added
+6d3143b num sum added
+
+6d3143b1 (alexey 2026-10-01 08:28:30 +0300  1) def plusplus(a, b):
+6d3143b1 (alexey 2026-10-01 08:28:30 +0300  2)     return a + b
+6d3143b1 (alexey 2026-10-01 08:28:30 +0300  3)
+acdcaa69 (alexey 2026-10-01 08:29:48 +0300  4) def minusminus(a, b):
+acdcaa69 (alexey 2026-10-01 08:29:48 +0300  5)     return a - b
+acdcaa69 (alexey 2026-10-01 08:29:48 +0300  6)
+8c60280f (alexey 2026-10-01 08:31:18 +0300  7) def multiply(a, b):
+8c60280f (alexey 2026-10-01 08:31:18 +0300  8)     return a * b
+8c60280f (alexey 2026-10-01 08:31:18 +0300  9)
+6369e13b (alexey 2026-10-01 08:23:41 +0300 10) a = float(input())
+6369e13b (alexey 2026-10-01 08:23:41 +0300 11) b = float(input())
+6369e13b (alexey 2026-10-01 08:23:41 +0300 12) c = input("выберите из ( * - + )")
+6369e13b (alexey 2026-10-01 08:23:41 +0300 13)
+6369e13b (alexey 2026-10-01 08:23:41 +0300 14) d = 0
+6369e13b (alexey 2026-10-01 08:23:41 +0300 15) if c == "+":
+6d3143b1 (alexey 2026-10-01 08:28:30 +0300 16)     d = plusplus(a, b)
+acdcaa69 (alexey 2026-10-01 08:29:48 +0300 17)
+acdcaa69 (alexey 2026-10-01 08:29:48 +0300 18) if c == "-":
+acdcaa69 (alexey 2026-10-01 08:29:48 +0300 19)     d = minusminus(a, b)
+8c60280f (alexey 2026-10-01 08:31:18 +0300 20)
+8c60280f (alexey 2026-10-01 08:31:18 +0300 21) if c == "*":
+8c60280f (alexey 2026-10-01 08:31:18 +0300 22)     d = minusminus(a, b)
