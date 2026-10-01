@@ -7,9 +7,12 @@ def minusminus(a, b):
 def multiply(a, b):
     return a * b
 
+def delenie(a, b):
+    return a / b
+
 a = float(input())
 b = float(input())
-c = input("выберите из ( * - + )")
+c = input("выберите из ( * - + / )")
 
 d = 0
 if c == "+":
@@ -19,6 +22,9 @@ if c == "-":
     d = minusminus(a, b)
 
 if c == "*":
-    d = minusminus(a, b)
+    d = multiply(a, b)
+
+if c == "/":
+    d = delenie(a, b)
 
 print(d)
