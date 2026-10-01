@@ -7,6 +7,12 @@ def minusminus(a, b):
 def multiply(a, b):
     return a * b
 
+def delen(a, b):
+    if b != 0:
+        return a / b
+    else:
+        return 0
+
 a = float(input())
 b = float(input())
 c = input("выберите из ( * - + )")
@@ -20,5 +26,8 @@ if c == "-":
 
 if c == "*":
     d = multiply(a, b)
+
+if c == "/":
+    d = delen(a, b)
 
 print(d)
