@@ -19,6 +19,6 @@ if c == "-":
     d = minusminus(a, b)
 
 if c == "*":
-    d = minusminus(a, b)
+    d = multiply(a, b)
 
 print(d)
