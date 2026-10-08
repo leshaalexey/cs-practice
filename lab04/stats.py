@@ -27,7 +27,6 @@ def read_valid(lines: list[str]) -> list[dict]:
         except ValueError:
             pass
     return valid
-    
 
 
 def average_by_city(records: list[dict]) -> dict:
