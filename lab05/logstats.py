@@ -6,7 +6,7 @@ LEVELS = {"DEBUG", "INFO", "WARNING", "ERROR"}
 def parse_event(line):
     parts = line.strip().split(maxsplit=2)
     if len(parts) != 3 or parts[1] not in LEVELS:
-        raise ValueError(f"bad line: {line!r}")
+        raise ValueError(f"Плохая строка: {line!r}")
     return {"time": parts[0], "level": parts[1], "message": parts[2]}
 
 
