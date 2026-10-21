@@ -29,7 +29,10 @@ def count_levels(lines):
 
 	for line in lines:
 		if line != "":
-			event = parse_event(line)
+			try:
+				event = parse_event(line)
+			except ValueError:
+				continue
 
 			if event["level"] not in levels_counter.keys():
 				levels_counter["BROKEN"] += 1
