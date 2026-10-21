@@ -46,7 +46,10 @@ def count_levels(lines):
 def top_errors(lines, n):
 	events = []
 	for line in lines:
-		events.append(parse_event(line))
+		try:
+			events.append(parse_event(line))
+		except ValueError:
+			continue
 
 	messages = [x["message"] for x in events if x["level"] == "ERROR"]
 
