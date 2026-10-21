@@ -77,7 +77,18 @@ def count_levels(lines):
 print(count_levels(test.split("\n")))
 
 def top_errors(lines, n):
-	...
+	events = []
+	for line in lines:
+		events.append(parse_event(line))
+
+	messages = [x["message"] for x in events if x["level"] == "ERROR"]
+
+	messages_count = [[x, 0] for x in set(messages)]
+
+	for message_cnt in messages_count:
+		message_cnt[1] = messages.count(message_cnt[0])
+
+	return messages_count
 
 def format_report(counts, errors):
 	...
