@@ -1,7 +1,7 @@
 import logstats
 import os
 
-log_file_name = input().strip() + ".log"
+log_file_name = input().strip()
 
 current_dir = os.path.dirname(os.path.abspath(__file__))
 log_file_path = os.path.join(current_dir, log_file_name)
