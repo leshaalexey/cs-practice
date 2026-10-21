@@ -1,7 +1,7 @@
 import logstats
 import os
 
-log_file_name = input() + ".log"
+log_file_name = input().strip() + ".log"
 
 current_dir = os.path.dirname(os.path.abspath(__file__))
 log_file_path = os.path.join(current_dir, log_file_name)
@@ -13,11 +13,11 @@ with open(log_file_path, encoding="utf-8") as log:
 
 counts = logstats.count_levels(log_st)
 
-all = [
-	"Ввод:           Вывод:\n",
-	f"{log_file_name}      {sum(counts.values())}\n",
-	f"                {counts["ERROR"]}\n",
-	f"                {counts["BROKEN"]}",
-]
+total = sum(counts.values())
+error_cnt = counts["ERROR"]
+broken_cnt = counts["BROKEN"]
+
+print(f"{total}\n{error_cnt}\n{broken_cnt}")
+
 with open("lab05/report.txt", "w", encoding="utf-8") as file:
-    file.writelines(all)
+    file.write(f"{total}\n{error_cnt}\n{broken_cnt}")
