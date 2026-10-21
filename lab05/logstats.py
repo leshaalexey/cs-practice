@@ -1,75 +1,48 @@
+from collections import Counter
+
+LEVELS = {"DEBUG", "INFO", "WARNING", "ERROR"}
+
+
 def parse_event(line):
-	line = line.strip()
-	f_space_index = line.find(" ")
-	s_space_index = line.find(" ", f_space_index+1)
-
-	time = line[:f_space_index]
-	level = line[f_space_index+1:s_space_index]
-	message = line[s_space_index+1:]
-
-	if time == "" or level == "" or message == "" or f_space_index == -1 or s_space_index == -1:
-		raise ValueError("")
-
-
-	return {
-		"time": time,
-		"level": level,
-		"message": message
-	}
+    parts = line.strip().split(maxsplit=2)
+    if len(parts) != 3 or parts[1] not in LEVELS:
+        raise ValueError(f"bad line: {line!r}")
+    return {"time": parts[0], "level": parts[1], "message": parts[2]}
 
 
 def count_levels(lines):
-	levels = [
-		"BROKEN",
-		"DEBUG",
-		"ERROR",
-		"INFO",
-		"WARNING",
-	]
-	levels_counter = {}
+    counts = {}
+    for line in lines:
+        if not line.strip():
+            continue
+        try:
+            level = parse_event(line)["level"]
+        except ValueError:
+            level = "BROKEN"
+        counts[level] = counts.get(level, 0) + 1
+    return counts
 
-	for line in lines:
-		if line != "":
-			try:
-				event = parse_event(line)
-			except ValueError:
-				levels_counter["BROKEN"] += 1
-
-			if event["level"] not in levels:
-				levels_counter["BROKEN"] += 1
-			else:
-				for l in levels:
-					if event["level"] == l:
-						levels_counter[l] += 1
-	
-	return levels_counter
 
 def top_errors(lines, n):
-	events = []
-	if lines:
-		for line in lines:
-			try:
-				events.append(parse_event(line))
-			except ValueError:
-				continue
+    c = Counter()
+    for line in lines:
+        if not line.strip():
+            continue
+        try:
+            event = parse_event(line)
+        except ValueError:
+            continue
+        if event["level"] == "ERROR":
+            c[event["message"]] += 1
+    ranked = sorted(c.items(), key=lambda p: (-p[1], p[0]))
+    return [[msg, cnt] for msg, cnt in ranked[:n]]
 
-		messages = [x["message"] for x in events if x["level"] == "ERROR"]
-
-		messages_count = [[x, 0] for x in set(messages)]
-
-		for message_cnt in messages_count:
-			message_cnt[1] = messages.count(message_cnt[0])
-
-		return messages_count[:n] if len(lines) > n else messages_count
 
 def format_report(counts, errors):
-	print("Отчет по журналу\n")
-	
-	for count in counts.keys():
-		print(f"{count}: {counts[count]}")
-
-
-	print("\nЧастые ошибки: ")
-
-	for error_with_cnt in errors:
-		print(f"- {error_with_cnt[0]} - {error_with_cnt[1]}")
+    text = "Отчёт по журналу\n\n"
+    for level in sorted(counts):
+        text += f"{level}: {counts[level]}\n"
+    text += "\nЧастые ошибки:\n"
+    for msg, cnt in errors:
+        text += f"- {msg} — {cnt}\n"
+    return text

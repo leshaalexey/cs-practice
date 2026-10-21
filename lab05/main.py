@@ -1,23 +1,19 @@
-import logstats
-import os
+from pathlib import Path
 
-log_file_name = input()
+from logstats import count_levels, top_errors, format_report
 
-current_dir = os.path.dirname(os.path.abspath(__file__))
-log_file_path = os.path.join(current_dir, log_file_name)
+base = Path(__file__).parent
+name = input().strip()
+path = base / name
 
-log_st = []
-with open(log_file_path, encoding="utf-8") as log:
-	for line in log:
-		log_st.append(line[:-1])
+with open(path, encoding="utf-8") as log:
+    counts = count_levels(log)
+with open(path, encoding="utf-8") as log:
+    errors = top_errors(log, 3)
 
-counts = logstats.count_levels(log_st)
+print(sum(counts.values()))
+print(counts.get("ERROR", 0))
+print(counts.get("BROKEN", 0))
 
-total = sum(counts.values())
-error_cnt = counts["ERROR"]
-broken_cnt = counts["BROKEN"]
-
-print(f"{total}\n{error_cnt}\n{broken_cnt}")
-
-with open("./report.txt", "w", encoding="utf-8") as file:
-    file.write(f"{total}\n{error_cnt}\n{broken_cnt}")
+with open(base / "report.txt", "w", encoding="utf-8", newline="\n") as out:
+    out.write(format_report(counts, errors))
