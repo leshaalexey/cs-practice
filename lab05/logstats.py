@@ -27,14 +27,15 @@ def count_levels(lines):
 	}
 
 	for line in lines:
-		event = parse_event(line)
+		if line != "":
+			event = parse_event(line)
 
-		if event["level"] not in levels_counter.keys():
-			levels_counter["BROKEN"] += 1
-		else:
-			for l in levels_counter.keys():
-				if event["level"] == l:
-					levels_counter[l] += 1
+			if event["level"] not in levels_counter.keys():
+				levels_counter["BROKEN"] += 1
+			else:
+				for l in levels_counter.keys():
+					if event["level"] == l:
+						levels_counter[l] += 1
 	
 	return levels_counter
 
@@ -50,7 +51,7 @@ def top_errors(lines, n):
 	for message_cnt in messages_count:
 		message_cnt[1] = messages.count(message_cnt[0])
 
-	return messages_count
+	return messages_count[:n] if len(lines) > n else messages_count
 
 def format_report(counts, errors):
 	print("Отчет по журналу\n")
