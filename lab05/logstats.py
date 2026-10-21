@@ -19,25 +19,26 @@ def parse_event(line):
 
 
 def count_levels(lines):
-	levels_counter = {
-		"BROKEN": 0,
-		"DEBUG": 0,
-		"ERROR": 0,
-		"INFO": 0,
-		"WARNING": 0,
-	}
+	levels = [
+		"BROKEN",
+		"DEBUG",
+		"ERROR",
+		"INFO",
+		"WARNING",
+	]
+	levels_counter = {}
 
 	for line in lines:
 		if line != "":
 			try:
 				event = parse_event(line)
 			except ValueError:
-				continue
+				levels_counter["BROKEN"] += 1
 
-			if event["level"] not in levels_counter.keys():
+			if event["level"] not in levels:
 				levels_counter["BROKEN"] += 1
 			else:
-				for l in levels_counter.keys():
+				for l in levels:
 					if event["level"] == l:
 						levels_counter[l] += 1
 	
@@ -45,20 +46,21 @@ def count_levels(lines):
 
 def top_errors(lines, n):
 	events = []
-	for line in lines:
-		try:
-			events.append(parse_event(line))
-		except ValueError:
-			continue
+	if lines:
+		for line in lines:
+			try:
+				events.append(parse_event(line))
+			except ValueError:
+				continue
 
-	messages = [x["message"] for x in events if x["level"] == "ERROR"]
+		messages = [x["message"] for x in events if x["level"] == "ERROR"]
 
-	messages_count = [[x, 0] for x in set(messages)]
+		messages_count = [[x, 0] for x in set(messages)]
 
-	for message_cnt in messages_count:
-		message_cnt[1] = messages.count(message_cnt[0])
+		for message_cnt in messages_count:
+			message_cnt[1] = messages.count(message_cnt[0])
 
-	return messages_count[:n] if len(lines) > n else messages_count
+		return messages_count[:n] if len(lines) > n else messages_count
 
 def format_report(counts, errors):
 	print("Отчет по журналу\n")
