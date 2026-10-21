@@ -55,11 +55,11 @@ def parse_event(line):
 
 def count_levels(lines):
 	levels_counter = {
+		"BROKEN": 0,
 		"DEBUG": 0,
+		"ERROR": 0,
 		"INFO": 0,
 		"WARNING": 0,
-		"ERROR": 0,
-		"BROKEN": 0,
 	}
 
 	for line in lines:
@@ -73,8 +73,6 @@ def count_levels(lines):
 					levels_counter[l] += 1
 	
 	return levels_counter
-
-print(count_levels(test.split("\n")))
 
 def top_errors(lines, n):
 	events = []
@@ -91,5 +89,13 @@ def top_errors(lines, n):
 	return messages_count
 
 def format_report(counts, errors):
-	...
+	print("Отчет по журналу\n")
+	
+	for count in counts.keys():
+		print(f"{count}: {counts[count]}")
 
+
+	print("\nЧастые ошибки: ")
+
+	for error_with_cnt in errors:
+		print(f"- {error_with_cnt[0]} - {error_with_cnt[1]}")
