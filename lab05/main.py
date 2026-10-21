@@ -16,8 +16,8 @@ counts = logstats.count_levels(log_st)
 all = [
 	"Ввод:           Вывод:\n",
 	f"{log_file_name}      {sum(counts.values())}\n",
-	f"                {sum(counts[x] for x in counts.keys() if x == "ERROR")}\n",
-	f"                {sum(counts[x] for x in counts.keys() if x == "BROKEN")}",
+	f"                {counts["ERROR"]}\n",
+	f"                {counts["BROKEN"]}",
 ]
 with open("lab05/report.txt", "w", encoding="utf-8") as file:
     file.writelines(all)
