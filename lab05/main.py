@@ -1,7 +1,7 @@
 import logstats
 import os
 
-log_file_name = input().strip()
+log_file_name = input()
 
 current_dir = os.path.dirname(os.path.abspath(__file__))
 log_file_path = os.path.join(current_dir, log_file_name)
@@ -19,5 +19,5 @@ broken_cnt = counts["BROKEN"]
 
 print(f"{total}\n{error_cnt}\n{broken_cnt}")
 
-with open("lab05/report.txt", "w", encoding="utf-8") as file:
+with open("./report.txt", "w", encoding="utf-8") as file:
     file.write(f"{total}\n{error_cnt}\n{broken_cnt}")
