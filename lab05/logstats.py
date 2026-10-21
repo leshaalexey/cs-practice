@@ -7,7 +7,8 @@ def parse_event(line):
 	message = line[s_space_index+1:]
 
 	if time == "" or level == "" or message == "" or f_space_index == -1 or s_space_index == -1:
-		raise ValueError("Некорректная строка")
+		# raise ValueError("Некорректная строка")
+		...
 
 
 	return {
