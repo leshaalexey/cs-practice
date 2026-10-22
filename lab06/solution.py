@@ -13,3 +13,8 @@ def deepest_path(paths: list[str]) -> str:
     if not paths: return ""
     max_depth = max(p.count('/') for p in paths)
     return min(p for p in paths if p.count('/') == max_depth)
+
+def deepest_path(paths: list[str]) -> str:
+    if not paths: return ""
+    max_depth = max(p.count('/') for p in paths)
+    return min(p for p in paths if p.count('/') == max_depth)
