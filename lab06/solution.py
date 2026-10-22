@@ -14,7 +14,10 @@ def deepest_path(paths: list[str]) -> str:
     max_depth = max(p.count('/') for p in paths)
     return min(p for p in paths if p.count('/') == max_depth)
 
-def deepest_path(paths: list[str]) -> str:
-    if not paths: return ""
-    max_depth = max(p.count('/') for p in paths)
-    return min(p for p in paths if p.count('/') == max_depth)
+def human_size(n_bytes: int) -> str:
+    units = ["Б", "КБ", "МБ", "ГБ", "ТБ"]
+    val, i = float(n_bytes), 0
+    while val >= 1024 and i < len(units) - 1:
+        val /= 1024
+        i += 1
+    return f"{int(val)} {units[i]}" if i == 0 else f"{val:.1f} {units[i]}"
