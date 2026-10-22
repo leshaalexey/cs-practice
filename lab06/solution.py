@@ -4,11 +4,13 @@ def count_by_extension(paths: list[str]) -> dict[str, int]:
     extensions = []
     for path in paths:
         filename = path.split('/')[-1]
-        last_dot_index = filename.rfind('.')
-        if last_dot_index == -1:
+        last_dot = filename.rfind('.')
+        if last_dot == -1:
+            ext = ""
+        elif last_dot == len(filename) - 1:
             ext = ""
         else:
-            ext = filename[last_dot_index + 1:].lower()
+            ext = filename[last_dot + 1:].lower()
         extensions.append(ext)
     return dict(Counter(extensions))
 
