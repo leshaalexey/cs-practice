@@ -1,23 +1,36 @@
-
 from collections import Counter
 
 def count_by_extension(paths: list[str]) -> dict[str, int]:
-    exts = []
-    for p in paths:
-        name = p.split('/')[-1]
-        ext = name.rsplit('.', 1)[-1].lower() if '.' in name else ""
-        exts.append(ext)
-    return dict(Counter(exts))
+    extensions = []
+    for path in paths:
+        filename = path.split('/')[-1]
+        last_dot_index = filename.rfind('.')
+        if last_dot_index == -1:
+            ext = ""
+        elif last_dot_index == 0:
+            ext = filename[1:].lower()
+        else:
+            ext = filename[last_dot_index + 1:].lower()
+        extensions.append(ext)
+    return dict(Counter(extensions))
+
 
 def deepest_path(paths: list[str]) -> str:
-    if not paths: return ""
+    if not paths:
+        return ""
     max_depth = max(p.count('/') for p in paths)
-    return min(p for p in paths if p.count('/') == max_depth)
+    candidates = [p for p in paths if p.count('/') == max_depth]
+    return min(candidates)
+
 
 def human_size(n_bytes: int) -> str:
     units = ["Б", "КБ", "МБ", "ГБ", "ТБ"]
-    val, i = float(n_bytes), 0
-    while val >= 1024 and i < len(units) - 1:
-        val /= 1024
-        i += 1
-    return f"{int(val)} {units[i]}" if i == 0 else f"{val:.1f} {units[i]}"
+    size = float(n_bytes)
+    unit_idx = 0
+    while size >= 1024 and unit_idx < len(units) - 1:
+        size /= 1024
+        unit_idx += 1
+    if unit_idx == 0:
+        return f"{int(size)} {units[unit_idx]}"
+    else:
+        return f"{size:.1f} {units[unit_idx]}"
