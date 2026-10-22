@@ -1,17 +1,12 @@
 from collections import Counter
 
+from pathlib import PurePath
+
 def count_by_extension(paths: list[str]) -> dict[str, int]:
     extensions = []
     for path in paths:
-        filename = path.split('/')[-1]
-        dot_pos = filename.rfind('.')
-        if dot_pos == -1:
-            ext = ""
-        elif dot_pos == len(filename) - 1:
-            ext = ""
-        else:
-            ext = filename[dot_pos + 1:].lower()
-        extensions.append(ext)
+        suffix = PurePath(path).suffix
+        extensions.append(suffix[1:].lower())
     return dict(Counter(extensions))
 
 def deepest_path(paths: list[str]) -> str:
