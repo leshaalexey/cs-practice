@@ -49,7 +49,10 @@ def parse_settings(lines: list[str]) -> dict:
             result[key] = current_list
         else:
             current_list = None
-            result[key] = _scalar(value)
+            if "," in value:
+                result[key] = [_scalar(v) for v in value.split(",")]
+            else:
+                result[key] = _scalar(value)
     return result
 
 
