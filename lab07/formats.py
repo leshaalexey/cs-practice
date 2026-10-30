@@ -1,5 +1,4 @@
 import json
-import re
 
 
 def csv_to_records(text: str) -> list[dict]:
@@ -21,12 +20,14 @@ def _scalar(value: str):
         return True
     if low in ("false", "no"):
         return False
-    if re.fullmatch(r"-?\d+", value):
+    try:
         return int(value)
-    # дробные: и с точкой (3.5), и с десятичной запятой (3,5)
-    if re.fullmatch(r"-?\d+[.,]\d+", value):
-        return float(value.replace(",", "."))
-    return value
+    except ValueError:
+        pass
+    try:
+        return float(value)
+    except ValueError:
+        return value
 
 
 def parse_settings(lines: list[str]) -> dict:
