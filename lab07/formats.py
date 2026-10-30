@@ -44,13 +44,13 @@ def parse_settings(lines: list[str]) -> dict:
             if current is not None:
                 if result[current] is None:
                     result[current] = []
-                result[current].append(_scalar(line[1:].strip()))
+                result[current].append(line[1:].strip())
             continue
         if ":" not in line:
             continue
         key, value = line.split(":", 1)
         key, value = key.strip(), value.strip()
-        result[key] = [value] if "," in value and not value.startswith("[") else _scalar(value)
+        result[key] = _scalar(value)
         current = key if value == "" else None
     return result
 
