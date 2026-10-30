@@ -1,3 +1,4 @@
+import ast
 import json
 
 
@@ -10,48 +11,38 @@ def csv_to_records(text: str) -> list[dict]:
 
 
 def _scalar(value: str):
-    if value.startswith("[") and value.endswith("]"):
-        return [_scalar(v.strip()) for v in value[1:-1].split(",") if v.strip()]
-    if value in ("", "~", "null"):
-        return None
-    if value.lower() in ("true", "yes", "on"):
+    value = value.strip()
+    if value in ("true", "yes"):
         return True
-    if value.lower() in ("false", "no", "off"):
+    if value in ("false", "no"):
         return False
-    for conv in (int, float):
-        try:
-            return conv(value)
-        except ValueError:
-            pass
-    return value
-
-
-def _strip_comment(line: str) -> str:
-    for i, ch in enumerate(line):
-        if ch == "#":
-            return line[:i]
-    return line
+    try:
+        return ast.literal_eval(value)
+    except (ValueError, SyntaxError):
+        return value
 
 
 def parse_settings(lines: list[str]) -> dict:
     result = {}
     current = None
     for raw in lines:
-        line = _strip_comment(raw).strip()
+        line = raw.split("#", 1)[0].strip()
         if not line:
             continue
         if line.startswith("-"):
             if current is not None:
-                if result[current] is None:
-                    result[current] = []
-                result[current].append(_scalar(line[1:].strip()))
+                current.append(_scalar(line[1:]))
             continue
         if ":" not in line:
             continue
         key, value = line.split(":", 1)
         key, value = key.strip(), value.strip()
-        result[key] = [] if value == "" else _scalar(value)
-        current = key if value == "" else None
+        if value == "":
+            current = []
+            result[key] = current
+        else:
+            current = None
+            result[key] = _scalar(value)
     return result
 
 
