@@ -24,19 +24,19 @@ def _scalar(value: str):
         return int(value)
     if re.fullmatch(r"[0-9]+\.[0-9]+", value):
         return float(value)
-    return value 
+    return value
 
 
 def parse_settings(lines: list[str]) -> dict:
     result = {}
     current_list = None
     for raw in lines:
-        line = raw.split("#", 1)[0].strip() 
+        line = raw.split("#", 1)[0].strip()
         if not line:
             continue
         if line.startswith("- ") or line == "-":
             if current_list is not None:
-                current_list.append(line[1:].strip())
+                current_list.append(_scalar(line[1:]))
             continue
         if ":" not in line:
             continue
@@ -48,7 +48,7 @@ def parse_settings(lines: list[str]) -> dict:
         else:
             current_list = None
             result[key] = _scalar(value)
-    return result
+    return {k: (None if v == [] else v) for k, v in result.items()}
 
 
 def merge_by_key(rows: list[dict], extra: dict, key: str = "id") -> list[dict]:
