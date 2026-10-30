@@ -10,7 +10,7 @@ def csv_to_records(text: str) -> list[dict]:
     return [dict(zip(header, [v.strip() for v in ln.split(",")])) for ln in lines[1:]]
 
 _INT = re.compile(r"-?[0-9]+")
-_FLOAT = re.compile(r"-?[0-9]+\.[0-9]+")
+_FLOAT = re.compile(r"-?[0-9]+[.,][0-9]+")
 
 
 def _scalar(value: str):
@@ -22,7 +22,7 @@ def _scalar(value: str):
     if _INT.fullmatch(value):
         return int(value)
     if _FLOAT.fullmatch(value):
-        return float(value)
+        return float(value.replace(",", "."))
     return value
 
 
