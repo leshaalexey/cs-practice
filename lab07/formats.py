@@ -6,62 +6,55 @@ def csv_to_records(text: str) -> list[dict]:
     if not lines:
         return []
     header = [h.strip() for h in lines[0].split(",")]
-    records = []
-    for ln in lines[1:]:
-        values = [v.strip() for v in ln.split(",")]
-        records.append(dict(zip(header, values)))
-    return records
+    return [dict(zip(header, [v.strip() for v in ln.split(",")])) for ln in lines[1:]]
 
 
 def _scalar(value: str):
-    value = value.strip()
-    if value in ("true", "yes"):
+    if value in ("", "~", "null"):
+        return None
+    if value.lower() in ("true", "yes", "on"):
         return True
-    if value in ("false", "no"):
+    if value.lower() in ("false", "no", "off"):
         return False
-    try:
-        return int(value)
-    except ValueError:
-        pass
-    try:
-        return float(value)
-    except ValueError:
-        return value
+    for conv in (int, float):
+        try:
+            return conv(value)
+        except ValueError:
+            pass
+    return value
+
+
+def _strip_comment(line: str) -> str:
+    for i, ch in enumerate(line):
+        if ch == "#" and (i == 0 or line[i - 1] in " \t"):
+            return line[:i]
+    return line
 
 
 def parse_settings(lines: list[str]) -> dict:
     result = {}
-    current_list = None
+    current = None
     for raw in lines:
-        line = raw.split("#", 1)[0].strip()
+        line = _strip_comment(raw).strip()
         if not line:
             continue
         if line.startswith("-"):
-            if current_list is not None:
-                current_list.append(_scalar(line[1:]))
+            if current is not None:
+                if result[current] is None:
+                    result[current] = []
+                result[current].append(_scalar(line[1:].strip()))
             continue
         if ":" not in line:
             continue
         key, value = line.split(":", 1)
         key, value = key.strip(), value.strip()
-        if value == "":
-            current_list = []
-            result[key] = current_list
-        else:
-            current_list = None
-            if "," in value:
-                result[key] = [v.strip() for v in value.split(",")]
-            else:
-                result[key] = _scalar(value)
+        result[key] = _scalar(value)
+        current = key if value == "" else None
     return result
 
 
 def merge_by_key(rows: list[dict], extra: dict, key: str = "id") -> list[dict]:
-    merged = []
-    for row in rows:
-        info = extra.get(row.get(key), {})
-        merged.append({**info, **row})
-    return merged
+    return [{**extra.get(row.get(key), {}), **row} for row in rows]
 
 
 def records_to_json(records: list[dict]) -> str:
