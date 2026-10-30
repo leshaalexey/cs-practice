@@ -13,8 +13,23 @@ def csv_to_records(text: str) -> list[dict]:
     return records
 
 
+def _strip_comment(line: str) -> str:
+    quote = None
+    for i, ch in enumerate(line):
+        if quote:
+            if ch == quote:
+                quote = None
+        elif ch in "\"'":
+            quote = ch
+        elif ch == "#":
+            return line[:i]
+    return line
+
+
 def _scalar(value: str):
     value = value.strip()
+    if len(value) >= 2 and value[0] == value[-1] and value[0] in "\"'":
+        return value[1:-1] 
     low = value.lower()
     if low in ("true", "yes"):
         return True
@@ -25,7 +40,7 @@ def _scalar(value: str):
     except ValueError:
         pass
     try:
-        return float(value.replace(",", ".") if value.count(",") == 1 else value)
+        return float(value)
     except ValueError:
         return value
 
@@ -34,7 +49,7 @@ def parse_settings(lines: list[str]) -> dict:
     result = {}
     current_list = None
     for raw in lines:
-        line = raw.split("#", 1)[0].strip()
+        line = _strip_comment(raw).strip()
         if not line:
             continue
         if line.startswith("-"):
