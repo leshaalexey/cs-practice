@@ -10,6 +10,8 @@ def csv_to_records(text: str) -> list[dict]:
 
 
 def _scalar(value: str):
+    if value.startswith("[") and value.endswith("]"):
+        return [_scalar(v.strip()) for v in value[1:-1].split(",") if v.strip()]
     if value in ("", "~", "null"):
         return None
     if value.lower() in ("true", "yes", "on"):
