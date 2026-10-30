@@ -50,7 +50,7 @@ def parse_settings(lines: list[str]) -> dict:
             continue
         key, value = line.split(":", 1)
         key, value = key.strip(), value.strip()
-        result[key] = _scalar(value)
+        result[key] = [value] if "," in value and not value.startswith("[") else _scalar(value)
         current = key if value == "" else None
     return result
 
