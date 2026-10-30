@@ -26,23 +26,28 @@ def _scalar(value: str):
 
 def parse_settings(lines: list[str]) -> dict:
     result = {}
-    last = None
+    current = None
     for raw in lines:
         line = raw.split("#", 1)[0].strip()
         if not line:
             continue
-        if line.startswith("-"):
-            if last is not None:
-                if not isinstance(result[last], list):
-                    result[last] = [result[last]]
-                result[last].append(_scalar(line[1:].strip()))
+        if line.startswith("- "):
+            if current is not None:
+                current.append(_scalar(line[2:].strip()))
             continue
         if ":" not in line:
             continue
         key, value = line.split(":", 1)
         key, value = key.strip(), value.strip()
-        result[key] = [] if value == "" else _scalar(value)
-        last = key
+        if value == "":
+            current = []
+            result[key] = current
+        else:
+            current = None
+            if ", " in value:
+                result[key] = [_scalar(v.strip()) for v in value.split(",") if v.strip()]
+            else:
+                result[key] = _scalar(value)
     return result
 
 
