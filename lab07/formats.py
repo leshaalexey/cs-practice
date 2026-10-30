@@ -28,7 +28,7 @@ def _scalar(value: str):
 
 def _strip_comment(line: str) -> str:
     for i, ch in enumerate(line):
-        if ch == "#" and (i == 0 or line[i - 1] in " \t"):
+        if ch == "#":
             return line[:i]
     return line
 
@@ -46,11 +46,11 @@ def parse_settings(lines: list[str]) -> dict:
                     result[current] = []
                 result[current].append(_scalar(line[1:].strip()))
             continue
-        if ":" not in line or raw[:1] in (" ", "\t"):
+        if ":" not in line:
             continue
         key, value = line.split(":", 1)
         key, value = key.strip(), value.strip()
-        result[key] = _scalar(value)
+        result[key] = [] if value == "" else _scalar(value)
         current = key if value == "" else None
     return result
 
