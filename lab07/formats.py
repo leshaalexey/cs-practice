@@ -1,104 +1,64 @@
 import json
+import re
 
-def csv_to_records(text):
-    """
-    CSV с заголовком → список словарей; значения остаются строками.
-    """
-    if not text or not text.strip():
-        return []
 
-    lines = [line.strip() for line in text.splitlines() if line.strip()]
+def csv_to_records(text: str) -> list[dict]:
+    lines = [ln for ln in text.splitlines() if ln.strip()]
     if not lines:
         return []
-
-    header = [col.strip() for col in lines[0].split(',')]
-
+    header = [h.strip() for h in lines[0].split(",")]
     records = []
-    for line in lines[1:]:
-        values = [val.strip() for val in line.split(',')]
-        # Защита от строк короче заголовка
-        while len(values) < len(header):
-            values.append("")
-
-        row = {}
-        for i in range(len(header)):
-            row[header[i]] = values[i]
-        records.append(row)
-
+    for ln in lines[1:]:
+        values = [v.strip() for v in ln.split(",")]
+        records.append(dict(zip(header, values)))
     return records
 
 
-def _parse_value(raw):
-    raw = raw.strip()
-    if raw.lower() in ("true", "yes"):
+def _scalar(value: str):
+    value = value.strip()
+    low = value.lower()
+    if low in ("true", "yes"):
         return True
-    if raw.lower() in ("false", "no"):
+    if low in ("false", "no"):
         return False
-
-    try:
-        if '.' in raw:
-            return float(raw)
-        return int(raw)
-    except ValueError:
-        pass
-
-    return raw
+    if re.fullmatch(r"-?\d+", value):
+        return int(value)
+    if re.fullmatch(r"-?\d+\.\d+", value):
+        return float(value)
+    return value
 
 
-def parse_settings(lines):
-    """
-    Простой YAML → словарь.
-    """
+def parse_settings(lines: list[str]) -> dict:
     result = {}
-    i = 0
-    while i < len(lines):
-        line = lines[i].strip()
-
-        if not line or line.startswith('#'):
-            i += 1
+    current_list = None
+    for raw in lines:
+        line = raw.split("#", 1)[0].strip()
+        if not line:
             continue
-
-        # Обработка списка: ключ:
-        if line.endswith(':') and not line.rstrip().endswith('-'):
-            key = line[:-1].strip()
-            lst = []
-            i += 1
-            while i < len(lines) and lines[i].lstrip().startswith('-'):
-                item_line = lines[i].lstrip()[1:].strip()
-                if '#' in item_line:
-                    item_line = item_line[:item_line.index('#')].strip()
-                lst.append(_parse_value(item_line))
-                i += 1
-            result[key] = lst
+        if line.startswith("-"):
+            if current_list is not None:
+                current_list.append(_scalar(line[1:]))
             continue
-
-        # Обычная пара ключ: значение
-        if ':' in line:
-            parts = line.split(':', 1)
-            key = parts[0].strip()
-            value_part = parts[1].strip() if len(parts) > 1 else ""
-
-            if '#' in value_part:
-                value_part = value_part[:value_part.index('#')].strip()
-
-            if value_part == '':
-                result[key] = ""
-            else:
-                result[key] = _parse_value(value_part)
-
-        i += 1
-
+        if ":" not in line:
+            continue
+        key, value = line.split(":", 1)
+        key, value = key.strip(), value.strip()
+        if value == "":
+            current_list = []
+            result[key] = current_list
+        else:
+            current_list = None
+            result[key] = _scalar(value)
     return result
 
 
-def merge_by_key(rows, extra, key="id"):
+def merge_by_key(rows: list[dict], extra: dict, key: str = "id") -> list[dict]:
     merged = []
     for row in rows:
-        new_row = dict(row)  # копия
-        lookup_key = row.get(key)
+        info = extra.get(row.get(key), {})
+        merged.append({**info, **row})
+    return merged
 
-        if lookup_key in extra:
-            extra_info = extra[lookup_key]
-            for k, v in extra_info.items():
-                if k not in new_row:
-                    new_row[k]
+
+def records_to_json(records: list[dict]) -> str:
+    return json.dumps(records, ensure_ascii=False, indent=2, sort_keys=True)
