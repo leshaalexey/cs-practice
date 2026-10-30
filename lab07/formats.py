@@ -22,9 +22,9 @@ def _scalar(value: str):
         return False
     if re.fullmatch(r"[0-9]+", value):
         return int(value)
-    if re.fullmatch(r"[0-9]+\.[0-9]+", value):
-        return float(value)
-    return value  
+    if re.fullmatch(r"[0-9]+[.,][0-9]+", value):
+        return float(value.replace(",", "."))
+    return value
 
 
 def parse_settings(lines: list[str]) -> dict:
