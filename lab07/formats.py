@@ -50,7 +50,7 @@ def parse_settings(lines: list[str]) -> dict:
         else:
             current_list = None
             if "," in value:
-                result[key] = [_scalar(v) for v in value.split(",")]
+                result[key] = [v.strip() for v in value.split(",")]
             else:
                 result[key] = _scalar(value)
     return result
