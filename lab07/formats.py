@@ -25,7 +25,7 @@ def _scalar(value: str):
     except ValueError:
         pass
     try:
-        return float(value)
+        return float(value.replace(",", ".") if value.count(",") == 1 else value)
     except ValueError:
         return value
 
