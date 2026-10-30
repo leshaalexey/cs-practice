@@ -1,4 +1,5 @@
 import json
+import re
 
 
 def csv_to_records(text: str) -> list[dict]:
@@ -8,46 +9,44 @@ def csv_to_records(text: str) -> list[dict]:
     header = [h.strip() for h in lines[0].split(",")]
     return [dict(zip(header, [v.strip() for v in ln.split(",")])) for ln in lines[1:]]
 
+_INT = re.compile(r"-?[0-9]+")
+_FLOAT = re.compile(r"-?[0-9]+\.[0-9]+")
+
 
 def _scalar(value: str):
+    value = value.strip()
     if value in ("true", "yes"):
         return True
     if value in ("false", "no"):
         return False
-    try:
+    if _INT.fullmatch(value):
         return int(value)
-    except ValueError:
-        pass
-    try:
+    if _FLOAT.fullmatch(value):
         return float(value)
-    except ValueError:
-        return value
+    return value
 
 
 def parse_settings(lines: list[str]) -> dict:
     result = {}
-    current = None
+    current_list = None
     for raw in lines:
-        line = raw.split("#", 1)[0].strip()
+        line = raw.split("#", 1)[0].strip()  
         if not line:
             continue
-        if line.startswith("- "):
-            if current is not None:
-                current.append(_scalar(line[2:].strip()))
+        if line.startswith("-"):
+            if current_list is not None:
+                current_list.append(_scalar(line[1:]))
             continue
         if ":" not in line:
             continue
         key, value = line.split(":", 1)
         key, value = key.strip(), value.strip()
         if value == "":
-            current = []
-            result[key] = current
+            current_list = []          
+            result[key] = current_list
         else:
-            current = None
-            if ", " in value:
-                result[key] = [_scalar(v.strip()) for v in value.split(",") if v.strip()]
-            else:
-                result[key] = _scalar(value)
+            current_list = None
+            result[key] = _scalar(value)  
     return result
 
 
