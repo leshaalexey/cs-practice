@@ -22,21 +22,21 @@ def _scalar(value: str):
         return False
     if re.fullmatch(r"[0-9]+", value):
         return int(value)
-    if re.fullmatch(r"[0-9]+[.,][0-9]+", value):
-        return float(value.replace(",", "."))
-    return value
+    if re.fullmatch(r"[0-9]+\.[0-9]+", value):
+        return float(value)
+    return value 
 
 
 def parse_settings(lines: list[str]) -> dict:
     result = {}
     current_list = None
     for raw in lines:
-        line = raw.split("#", 1)[0].strip()  
+        line = raw.split("#", 1)[0].strip() 
         if not line:
             continue
         if line.startswith("- ") or line == "-":
             if current_list is not None:
-                current_list.append(_scalar(line[1:]))
+                current_list.append(line[1:].strip())
             continue
         if ":" not in line:
             continue
