@@ -46,13 +46,12 @@ def parse_settings(lines: list[str]) -> dict:
                     result[current] = []
                 result[current].append(_scalar(line[1:].strip()))
             continue
-        if ":" not in line:
+        if ":" not in line or raw[:1] in (" ", "\t"):
             continue
         key, value = line.split(":", 1)
         key, value = key.strip(), value.strip()
         result[key] = _scalar(value)
-        if value == "":
-            current = key
+        current = key if value == "" else None
     return result
 
 
