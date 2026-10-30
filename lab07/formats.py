@@ -23,8 +23,9 @@ def _scalar(value: str):
         return False
     if re.fullmatch(r"-?\d+", value):
         return int(value)
-    if re.fullmatch(r"-?\d+\.\d+", value):
-        return float(value)
+    # дробные: и с точкой (3.5), и с десятичной запятой (3,5)
+    if re.fullmatch(r"-?\d+[.,]\d+", value):
+        return float(value.replace(",", "."))
     return value
 
 
