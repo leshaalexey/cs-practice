@@ -1,5 +1,4 @@
 import json
-import re
 
 
 def csv_to_records(text: str) -> list[dict]:
@@ -16,47 +15,28 @@ def csv_to_records(text: str) -> list[dict]:
 
 def _scalar(value: str):
     value = value.strip()
-    if _unquote(value) is not None:
-        return _unquote(value)
     if value in ("true", "yes"):
         return True
     if value in ("false", "no"):
         return False
-    if re.fullmatch(r"[0-9]+", value):
+    try:
         return int(value)
-    if re.fullmatch(r"[0-9]+\.[0-9]+", value):
+    except ValueError:
+        pass
+    try:
         return float(value)
-    return value
-
-
-def _strip_comment(line):
-    q = None
-    for i, ch in enumerate(line):
-        if q:
-            if ch == q:
-                q = None
-        elif ch in "\"'":
-            q = ch
-        elif ch == "#":
-            return line[:i]
-    return line
-
-
-def _unquote(v):
-    v = v.strip()
-    if len(v) >= 2 and v[0] == v[-1] and v[0] in "\"'":
-        return v[1:-1]
-    return None
+    except ValueError:
+        return value
 
 
 def parse_settings(lines: list[str]) -> dict:
     result = {}
     current_list = None
     for raw in lines:
-        line = _strip_comment(raw).strip()
+        line = raw.split("#", 1)[0].strip()
         if not line:
             continue
-        if line.startswith("- ") or line == "-":
+        if line.startswith("-"):
             if current_list is not None:
                 current_list.append(_scalar(line[1:]))
             continue
