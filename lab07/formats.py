@@ -1,4 +1,3 @@
-import ast
 import json
 
 
@@ -11,14 +10,17 @@ def csv_to_records(text: str) -> list[dict]:
 
 
 def _scalar(value: str):
-    value = value.strip()
     if value in ("true", "yes"):
         return True
     if value in ("false", "no"):
         return False
     try:
-        return ast.literal_eval(value)
-    except (ValueError, SyntaxError):
+        return int(value)
+    except ValueError:
+        pass
+    try:
+        return float(value)
+    except ValueError:
         return value
 
 
@@ -29,13 +31,11 @@ def parse_settings(lines: list[str]) -> dict:
         line = raw.split("#", 1)[0].strip()
         if not line:
             continue
-        if line.startswith("-"):
+        if line.startswith("- "):
             if current is not None:
-                current.append(_scalar(line[1:]))
+                current.append(_scalar(line[2:].strip()))
             continue
-        if ":" not in line:
-            continue
-        key, value = line.split(":", 1)
+        key, _, value = line.partition(":")
         key, value = key.strip(), value.strip()
         if value == "":
             current = []
