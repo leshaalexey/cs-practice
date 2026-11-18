@@ -64,3 +64,24 @@ vector[1:4] = 0
 small_matrix = np.arange(1, 10).reshape(3, 3)
 small_matrix[0, :] = -1
 small_matrix[1:, 1:] = 9
+
+changed_hours = hours.copy()
+changed_hours[1:3] = 99
+changed_hours[1::2] = -1
+print(changed_hours)
+# .copy() создает новый массив идентичный данному, так мы изменяем копию, не трогая оригинальные данные
+
+changed_matrix = matrix.copy()
+changed_matrix[0, :] = 0
+changed_matrix[:, -1] = -1
+changed_matrix[1:-1, 1:-1] = 100
+print(matrix)
+print(changed_matrix)
+
+#Задание 6
+numbers = np.arange(12)
+table = numbers.reshape(3, 4)
+transposed = table.T
+
+print(numbers.shape, table.shape, transposed.shape)
+#reshape меняет форму массива, сохраняя количество элементов 12 элементов не хватит чтобы заполнить массив 5 на 3
