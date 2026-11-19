@@ -28,3 +28,4 @@ def cap_above(values, limit):
 def celsius_to_fahrenheit(values):
     a = np.array(values, dtype=float)
     return a * 9 / 5 + 32
+    sdf
