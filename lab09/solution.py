@@ -1,10 +1,10 @@
 import numpy as np
 
 def make_hours():
-    return np.arange(0, 22, 3)
+    return np.arange(0, 22, 3).tolist()
 
 def vector_report(values):
-    a = np.array(values, dtype=float)
+    a = np.array(values, dtype=float).tolist()
 
     return {
         "third": a[2],
@@ -18,13 +18,13 @@ def change_vector(values):
     a = np.asarray(values, dtype=float).copy()
     a[1:3] = 99
     a[::2] = -1
-    return a
+    return a.tolist()
 
 def cap_above(values, limit):
     a = np.asarray(values, dtype=float).copy()
     a[a > limit] = limit
-    return a
+    return a.tolist()
 
 def celsius_to_fahrenheit(values):
     a = np.array(values, dtype=float)
-    return a * 9 / 5 + 32
+    return (a * 9 / 5 + 32).tolist()
