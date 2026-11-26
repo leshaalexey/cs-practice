@@ -12,7 +12,7 @@ def replace_rectangle(matrix, row_start, row_stop, column_start, column_stop, va
     m = np.array(matrix)
     m[row_start:row_stop, column_start:column_stop] = value
     return m.tolist()
-print(replace_rectangle([[1,2], [3, 4]], 0, 1, 0, 2, -1))
+
 def matrix_vector_product(matrix, vector):
     m = np.array(matrix)
     v = np.array(vector)
@@ -29,7 +29,7 @@ def transpose_matrix(matrix):
 
 def solve_system(matrix, vector):
     m = np.array(matrix)
-    v = m = np.array(vector)
+    v = np.array(vector)
     return np.linalg.solve(m, v).tolist()
 
 def tensor_channel_mean(tensor):
