@@ -1,16 +1,16 @@
 import numpy as np
 
 def make_table(rows, columns):
-    return np.arange(rows * columns).reshape(rows, columns).tolist()
+    return np.arange(1, (rows * columns) + 1).reshape(rows, columns).tolist()
 
 def rectangle(matrix, row_start, row_stop, column_start, column_stop):
-    m = np.array(matrix)
+    m = np.array(matrix, dtype=float)
 
-    return m[row_start:row_stop+1, column_start:column_stop+1].tolist()
+    return m[row_start:row_stop, column_start:column_stop+1].tolist()
 
 def replace_rectangle(matrix, row_start, row_stop, column_start, column_stop, value):
     m = np.array(matrix)
-    m[row_start:row_stop+1, column_start:column_stop+1] = value
+    m[row_start:row_stop+1, column_start:column_stop] = value
     return m.tolist()
 
 def matrix_vector_product(matrix, vector):
