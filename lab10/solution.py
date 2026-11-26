@@ -33,3 +33,10 @@ def solve_system(matrix, vector):
     return round(np.linalg.solve(m, v), 6)
 
 def tensor_channel_mean(tensor):
+    t = np.array(tensor)
+    return np.mean(t, axis=-1).tolist()
+
+def point_distance(first, second):
+    f = np.array(first)
+    s = np.array(second)
+    return round(np.linalg.norm(f-s), 6)
