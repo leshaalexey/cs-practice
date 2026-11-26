@@ -30,7 +30,7 @@ def transpose_matrix(matrix):
 def solve_system(matrix, vector):
     m = np.array(matrix)
     v = m = np.array(vector)
-    return round(np.linalg.solve(m, v), 6)
+    return np.linalg.solve(m, v).tolist()
 
 def tensor_channel_mean(tensor):
     t = np.array(tensor)
