@@ -6,7 +6,7 @@ def make_table(rows, columns):
 def rectangle(matrix, row_start, row_stop, column_start, column_stop):
     m = np.array(matrix)
 
-    return matrix[row_start:row_stop+1, column_start:column_stop+1].tolist()
+    return m[row_start:row_stop+1, column_start:column_stop+1].tolist()
 
 def replace_rectangle(matrix, row_start, row_stop, column_start, column_stop, value):
     m = np.array(matrix)
@@ -16,7 +16,7 @@ def replace_rectangle(matrix, row_start, row_stop, column_start, column_stop, va
 def matrix_vector_product(matrix, vector):
     m = np.array(matrix)
     v = np.array(vector)
-    return (m @ vector).tolist()
+    return (m @ v).tolist()
 
 def matrix_multiply(left, right):
     l = np.array(left)
