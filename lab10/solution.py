@@ -10,7 +10,7 @@ def rectangle(matrix, row_start, row_stop, column_start, column_stop):
 
 def replace_rectangle(matrix, row_start, row_stop, column_start, column_stop, value):
     m = np.array(matrix)
-    m[row_start:row_stop+1, column_start:column_stop] = value
+    m[row_start:row_stop+1, column_start:column_stop+1] = value
     return m.tolist()
 
 def matrix_vector_product(matrix, vector):
